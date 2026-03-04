@@ -1,3 +1,12 @@
+# AI Engineering Internship Projects
+
+This repository contains a collection of Artificial Intelligence and Natural Language Processing (NLP) projects developed during my internship. The primary focus is on building scalable, multilingual AI systems using state-of-the-art open-source models.
+
+## Repository Structure
+
+The project is divided into modular tasks. Each folder contains the specific code, dependencies, and documentation for that module.
+
+### 📁 Task 1: Language Detection Model
 # Language-Detection-Model
 A Machine Learning and NLP project that identifies the language of a given text using natural language processing, feature engineering, and classification algorithms.
 # 🌍 Language Detection Model
@@ -240,11 +249,49 @@ python language_detection.py
 
 ---
 
-## 👨‍💻 Author
+### 📁 Task 2: Multilingual Voice-to-Text Translator
+# Task 2: Multilingual Voice-to-Text Translator
 
-**Mohd Aas Khan**
-Machine Learning & Ai Enthusiast
+## Overview
+This project is a fully offline, AI-powered voice translation module. It is designed to capture live audio from a microphone, transcribe spoken words, detect the primary language (including complex code-mixing like Hinglish), and translate the meaning into formal English. 
+
+A key achievement of this module is its strict adherence to data privacy. By utilizing local models, all audio processing and translation occur directly on the host machine without relying on external or paid cloud APIs.
+
+## System Architecture
+The system operates in two main phases:
+1. **The Ears (Speech-to-Text):** Utilizes OpenAI's open-source `Whisper` model to capture live microphone input and generate raw text transcripts. It handles multiple regional and global languages automatically.
+2. **The Brain (Analysis & Translation):** Utilizes Meta's `Llama 3.2` model via `Ollama`. It receives the raw text, corrects minor transcription errors, identifies the specific language spoken, and outputs a structured JSON report with the formal English translation.
+
+## Prerequisites
+To run this model on a local Windows machine, the following software must be installed:
+* **Python 3.8+**
+* **FFmpeg:** Required for audio processing (`winget install ffmpeg`).
+* **Ollama:** Required to run the local language model. 
+
+### Python Libraries
+Install the required libraries using pip:
+```bash
+pip install openai-whisper sounddevice scipy ollama
+
+### 📁 Task 3: [Upcoming Task]
+* *Details will be added as the internship progresses.*
 
 ---
 
-⭐ If you like this project, give it a star on GitHub!
+## 🚀 Setup and Installation
+
+To run any of the modules in this repository locally, you will need Python installed on your system. 
+
+**General Prerequisites:**
+1. Clone this repository to your local machine.
+2. Navigate to the specific task folder.
+3. Install the required Python libraries (listed in each task's folder).
+4. For Task 2, ensure you have **FFmpeg** and **Ollama** installed on your system.
+
+## 🧠 Tech Stack Overview
+* **Language:** Python
+* **AI/ML Models:** Whisper, Llama 3.2 (via Ollama)
+* **Libraries:** `whisper`, `ollama`, `sounddevice`, `scipy`
+
+---
+*Developed as part of an AI Technical Internship.*
