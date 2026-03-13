@@ -1,12 +1,3 @@
-# AI Engineering Internship Projects
-
-This repository contains a collection of Artificial Intelligence and Natural Language Processing (NLP) projects developed during my internship. The primary focus is on building scalable, multilingual AI systems using state-of-the-art open-source models.
-
-## Repository Structure
-
-The project is divided into modular tasks. Each folder contains the specific code, dependencies, and documentation for that module.
-
-### 📁 Task 1: Language Detection Model
 # Language-Detection-Model
 A Machine Learning and NLP project that identifies the language of a given text using natural language processing, feature engineering, and classification algorithms.
 # 🌍 Language Detection Model
@@ -72,49 +63,188 @@ The project starts by importing required libraries:
 ```
 data = pd.read_csv("language.csv")
 ```
-### 📁 Task 2: Multilingual Voice-to-Text Translator
-# Task 2: Multilingual Voice-to-Text Translator
 
-## Overview
-This project is a fully offline, AI-powered voice translation module. It is designed to capture live audio from a microphone, transcribe spoken words, detect the primary language (including complex code-mixing like Hinglish), and translate the meaning into formal English. 
+The dataset contains:
 
-A key achievement of this module is its strict adherence to data privacy. By utilizing local models, all audio processing and translation occur directly on the host machine without relying on external or paid cloud APIs.
+* Text sentences
+* Corresponding language labels
 
-## System Architecture
-The system operates in two main phases:
-1. **The Ears (Speech-to-Text):** Utilizes OpenAI's open-source `Whisper` model to capture live microphone input and generate raw text transcripts. It handles multiple regional and global languages automatically.
-2. **The Brain (Analysis & Translation):** Utilizes Meta's `Llama 3.2` model via `Ollama`. It receives the raw text, corrects minor transcription errors, identifies the specific language spoken, and outputs a structured JSON report with the formal English translation.
-
-## Prerequisites
-To run this model on a local Windows machine, the following software must be installed:
-* **Python 3.8+**
-* **FFmpeg:** Required for audio processing (`winget install ffmpeg`).
-* **Ollama:** Required to run the local language model. 
-
-### Python Libraries
-Install the required libraries using pip:
-```bash
-pip install openai-whisper sounddevice scipy ollama
-
-### 📁 Task 3: [Upcoming Task]
-* *Details will be added as the internship progresses.*
+Total samples: **22,000 rows**
 
 ---
 
-## 🚀 Setup and Installation
+### 3️⃣ Text Vectorization (NLP)
 
-To run any of the modules in this repository locally, you will need Python installed on your system. 
+Machine learning models cannot understand text directly.
 
-**General Prerequisites:**
-1. Clone this repository to your local machine.
-2. Navigate to the specific task folder.
-3. Install the required Python libraries (listed in each task's folder).
-4. For Task 2, ensure you have **FFmpeg** and **Ollama** installed on your system.
+```
+CountVectorizer()
+```
 
-## 🧠 Tech Stack Overview
-* **Language:** Python
-* **AI/ML Models:** Whisper, Llama 3.2 (via Ollama)
-* **Libraries:** `whisper`, `ollama`, `sounddevice`, `scipy`
+CountVectorizer converts text into numbers by counting word frequency.
+
+Example:
+
+```
+"love data science"
+"love machine learning"
+```
+
+Becomes:
+
+```
+['data','learning','love','machine','science']
+```  
 
 ---
-*Developed as part of an AI Technical Internship.*
+
+### 4️⃣ Dataset Checking
+
+```
+data.isnull().sum()
+```
+
+No missing values are found.
+
+Each language contains equal samples, making the dataset balanced.
+
+---
+
+### 5️⃣ Prepare Input and Output Data
+
+```
+x = np.array(data["Text"])
+y = np.array(data["language"])
+```
+
+* **x** → text data
+* **y** → language labels
+
+---
+
+### 6️⃣ Convert Text to Numerical Features
+
+```
+cv = CountVectorizer()
+x = cv.fit_transform(x)
+```
+
+All sentences are converted into a sparse numerical matrix.
+
+---
+
+### 7️⃣ Train-Test Split
+
+```
+train_test_split(x, y, test_size=0.33, random_state=42)
+```
+
+Dataset division:
+
+* 67% Training Data
+* 33% Testing Data
+
+---
+
+### 8️⃣ Model Training
+
+```
+model = MultinomialNB()
+model.fit(X_train, y_train)
+```
+
+Algorithm Used:
+**Multinomial Naive Bayes**
+
+Why?
+
+* Fast
+* Efficient for text classification
+* High performance on NLP tasks
+
+---
+
+### 9️⃣ Model Evaluation
+
+```
+model.score(X_test, y_test)
+```
+
+Model Accuracy:
+**≈ 95% Accuracy**
+
+---
+
+### 🔟 Language Prediction
+
+```
+user = input("Enter a text")
+data = cv.transform([user]).toarray()
+output = model.predict(data)
+print(output)
+```
+
+Steps:
+
+1. User enters text
+2. Text converts into vector
+3. Model predicts language
+4. Predicted language is displayed
+
+Example:
+
+```
+Input: Hallo wereld
+Output: Dutch
+```
+
+---
+
+## ▶️ Installation & Setup
+
+Clone repository:
+
+```
+git clone https://github.com/YOUR_USERNAME/Language-Detection-Model.git
+cd Language-Detection-Model
+```
+
+Install dependencies:
+
+```
+pip install -r requirements.txt
+```
+
+Run project:
+
+```
+python language_detection.py
+```
+
+---
+
+## 📊 Model Performance
+
+* Algorithm: Multinomial Naive Bayes
+* NLP Method: CountVectorizer
+* Accuracy: ~95%
+
+---
+
+## 📈 Future Improvements
+
+* Deep Learning models (LSTM / Transformers)
+* Web application deployment
+* REST API integration
+* Real-time language detection system
+
+---
+
+## 👨‍💻 Author
+
+**Mohd Aas Khan**
+Machine Learning & Ai Enthusiast
+
+---
+
+⭐ If you like this project, give it a star on GitHub!
