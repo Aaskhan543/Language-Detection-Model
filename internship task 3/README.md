@@ -15,7 +15,7 @@ A highly responsive, multimodal AI technical interviewer application. Built with
 * **Blazing Fast Inference:** Powered by Llama 3.1 (8B) running on Groq's LPU infrastructure, reducing AI response times to milliseconds.
 * **Dynamic Memory Engine:** Features a custom-built context memory architecture that tracks conversation history, allowing the AI to ask contextual follow-up questions and probe deeper into candidate answers.
 * **Automated Summarization:** Implements a token-saving summarization algorithm that automatically compresses older conversation history into a running summary after 6 interactions, preventing API crashes during long interviews.
-* **Fluent Design UI:** A responsive, modern interface featuring mesh gradients, frosted glass panels (Glassmorphism), and micro-animations (bouncing typing indicators, pulse-recording buttons).
+* **Fluent Design UI:** A responsive, modern interface featuring mesh gradients, frosted glass panels (Glassmorphism), and micro-animations.
 
 ## 🧠 Architecture Details
 
@@ -26,14 +26,7 @@ This project is separated into modular components to ensure scalability and clea
 3.  **`memory_engine.py` (The Context Store):** A dedicated class that handles short-term conversation history, tracks interaction counts, and executes long-term summarization logic.
 4.  **`index.html` (The Client):** Handles the Web Speech API transcription, audio playback, and UI state management. Includes a robust toggle system to prevent audio feedback loops.
 
-## 🛠️ Installation & Setup
-
-### Prerequisites
-* Python 3.8+
-* A free API key from [Groq Cloud](https://console.groq.com/)
-* A modern web browser (Google Chrome or Microsoft Edge recommended for full Web Speech API support).
-
-### 🛠️ Quick Start (Installation & Setup)
+## 🛠️ Quick Start (Installation & Setup)
 
 Copy and paste this entire block into your terminal to set up and run the application instantly:
 
@@ -45,22 +38,9 @@ cd AI-Interviewer-Pro
 # 2. Install all required dependencies
 pip install flask groq edge-tts python-dotenv
 
-# 3. Create the secure environment file (Replace with your actual Groq key!)
-echo "GROQ_API_KEY=your_secret_api_key_here" > .env (i am not giving mine😁) 
+# 3. Create the secure environment file 
+# (Replace with your actual Groq key! I am not giving mine 😁)
+echo "GROQ_API_KEY=your_secret_api_key_here" > .env
 
 # 4. Start the enterprise AI backend
 python app.py
-📋 Project Requirements Fulfilled
-This application was built to successfully demonstrate the following technical requirements:
-
-[x] Design conversation memory architecture.
-
-[x] Implement context storage for interview sessions (memory_engine.py).
-
-[x] Build retrieval system for previous candidate responses.
-
-[x] Integrate contextual memory with LLM prompts (llm_handler.py).
-
-[x] Implement summarization logic for long interview sessions.
-
-
