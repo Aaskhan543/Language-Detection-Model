@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    @page {
+        size: A4;
+        margin: 20mm;
+        background-color: #f8f9fa;
+    }
+    body {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: #333;
+        line-height: 1.6;
+        font-size: 11pt;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
+    .header-banner {
+        background-color: #0f172a;
+        color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+    h1 {
+        margin: 0;
+        font-size: 22pt;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+    }
+    .subtitle {
+        font-size: 12pt;
+        color: #94a3b8;
+        margin-top: 5px;
+    }
+    h2 {
+        color: #0f172a;
+        font-size: 15pt;
+        border-bottom: 2px solid #cbd5e1;
+        padding-bottom: 5px;
+        margin-top: 25px;
+    }
+    h3 {
+        color: #334155;
+        font-size: 12pt;
+        margin-top: 15px;
+    }
+    .badge {
+        display: inline-block;
+        background-color: #e2e8f0;
+        color: #475569;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 9pt;
+        font-weight: bold;
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+    .feature-box {
+        background-color: #ffffff;
+        border-left: 4px solid #3b82f6;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 0 4px 4px 0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    ul {
+        margin-top: 5px;
+        padding-left: 20px;
+    }
+    li {
+        margin-bottom: 8px;
+    }
+    .footer {
+        margin-top: 40px;
+        text-align: center;
+        font-size: 10pt;
+        color: #64748b;
+        border-top: 1px solid #cbd5e1;
+        padding-top: 15px;
+    }
+</style>
+</head>
+<body>
+
+    <div class="header-banner">
+        <h1>🎙️ AI Interviewer Pro</h1>
+        <div class="subtitle">Task 4: Domain Routing & Master Interview Controller</div>
+    </div>
+
+    <p>
+        <span class="badge">Python 3.13</span>
+        <span class="badge">Flask</span>
+        <span class="badge">Groq (Llama 3.1)</span>
+        <span class="badge">Azure TTS</span>
+    </p>
+
+    <h2>Project Overview</h2>
+    <p>
+        This module implements the <strong>Domain-Based Intelligent Voice AI Interviewer</strong> system. Designed as a structured, automated technical interview platform, the AI interacts with candidates using real-time Speech-to-Text and Text-to-Speech capabilities. It adapts dynamically based on the candidate's chosen domain and enforces strict enterprise interview protocols.
+    </p>
+
+    <h2>✨ Key Deliverables & Features</h2>
+    
+    <div class="feature-box">
+        <strong>1. Domain Selection Routing</strong><br>
+        Candidates are presented with a UI modal to select their specific interview track (e.g., Frontend, Backend, Data Science, DevOps). The selected domain is passed seamlessly to the LLM, instantly adapting the AI's internal knowledge base and context prompt structure.
+    </div>
+
+    <div class="feature-box">
+        <strong>2. Master Interview Controller</strong><br>
+        The backend engine enforces a strict corporate interview format:
+        <ul>
+            <li><strong>Fixed Format:</strong> The interview consists of exactly 5 questions, beginning with an introductory prompt.</li>
+            <li><strong>Difficulty Scaling:</strong> The algorithm automatically ramps up the difficulty of questions from Easy to Medium to Hard/Expert as the session progresses.</li>
+        </ul>
+    </div>
+
+    <div class="feature-box">
+        <strong>3. Final Structured Evaluation</strong><br>
+        Upon completing the 5th question, the system automatically terminates the interview loop and generates a comprehensive, structured evaluation report featuring an overall score, identified strengths, areas for improvement, and a final hiring recommendation.
+    </div>
+
+    <h2>🧠 Architecture Details</h2>
+    <ul>
+        <li><strong>app.py (The Switchboard):</strong> Flask routing engine that manages the HTTP payloads, triggers the TTS generation, and counts the interview interactions to enforce the 5-question limit.</li>
+        <li><strong>llm_handler.py (The Brain):</strong> The integration point for the Groq API. It merges the user's selected domain into the system prompt, calculates difficulty scaling, and formulates the final summary.</li>
+        <li><strong>memory_engine.py (The Context Store):</strong> A dynamic conversation tracker that feeds short-term history and long-term summaries back into the LLM to maintain conversational continuity.</li>
+    </ul>
+
+    <div class="footer">
+        Developed by <strong>Mohd. Aas Khan</strong><br>
+        Lead Developer – Full Stack Engineering & AI Integration<br>
+        Internship Task 4 Submission
+    </div>
+
+</body>
+</html>
