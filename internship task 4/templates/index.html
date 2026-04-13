@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interviewer Pro | Enterprise</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+        :root { 
+            --accent-gradient: linear-gradient(135deg, #0078D4, #28A8EA); 
+            --bg-deep: #050505;
+            --glass-bg: rgba(30, 41, 59, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { 
+            background: radial-gradient(circle at 15% 50%, rgba(0, 120, 212, 0.15), transparent 25%),
+                        radial-gradient(circle at 85% 30%, rgba(40, 168, 234, 0.1), transparent 25%);
+            background-color: var(--bg-deep);
+            color: var(--text-main); 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px;
+        }
+
+        /* --- DOMAIN SELECTION MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(10px);
+            display: flex; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: var(--glass-bg); padding: 40px; border-radius: 24px;
+            border: 1px solid var(--glass-border); text-align: center; max-width: 500px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+        .modal-content h2 { margin-bottom: 20px; font-weight: 500; }
+        .domain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .domain-btn {
+            background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--glass-border);
+            padding: 15px; border-radius: 12px; cursor: pointer; transition: all 0.2s; font-size: 1rem;
+        }
+        .domain-btn:hover { background: var(--accent-gradient); transform: translateY(-2px); border-color: transparent; }
+
+        .app-container { 
+            width: 100%; max-width: 900px; height: 90vh; 
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1); 
+            display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--glass-border); 
+        }
+
+        .header { padding: 24px; background: rgba(15, 23, 42, 0.4); border-bottom: 1px solid var(--glass-border); text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .header-badge { background: var(--accent-gradient); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0, 120, 212, 0.3); }
+        .header h1 { font-size: 1.5rem; font-weight: 500; letter-spacing: -0.5px; }
+
+        .chat-box { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
+        .chat-box::-webkit-scrollbar { width: 6px; }
+        .chat-box::-webkit-scrollbar-track { background: transparent; }
+        .chat-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .message { max-width: 75%; padding: 16px 20px; border-radius: 18px; line-height: 1.6; font-size: 0.95rem; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+        .ai-message { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .user-message { background: var(--accent-gradient); align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px rgba(0, 120, 212, 0.2); }
+
+        .controls { padding: 24px 30px; background: rgba(15, 23, 42, 0.6); border-top: 1px solid var(--glass-border); display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .input-row { display: flex; width: 100%; gap: 12px; align-items: center; }
+        .record-btn { background: rgba(255, 255, 255, 0.05); color: var(--text-main); border: 1px solid var(--glass-border); height: 50px; width: 50px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
+        .record-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); transform: scale(1.05); }
+        .record-btn.recording { background: #EF4444; border-color: #EF4444; animation: pulse-red 1.5s infinite; }
+        .text-input { flex: 1; height: 50px; padding: 0 20px; border-radius: 25px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.2); color: var(--text-main); font-size: 0.95rem; outline: none; transition: all 0.3s ease; }
+        .text-input:focus { border-color: #28A8EA; background: rgba(0, 0, 0, 0.4); box-shadow: 0 0 0 3px rgba(40, 168, 234, 0.1); }
+        .send-btn { background: var(--accent-gradient); color: white; border: none; height: 50px; padding: 0 24px; border-radius: 25px; font-weight: 500; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .send-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 120, 212, 0.4); }
+        .send-btn:disabled, .record-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .status-wrapper { display: flex; align-items: center; gap: 8px; height: 20px; }
+        .status-text { color: var(--text-muted); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.5px; }
+        .typing-indicator { display: none; align-items: center; gap: 4px; }
+        .typing-indicator span { width: 6px; height: 6px; background-color: var(--text-muted); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+    </style>
+</head>
+<body>
+
+    <div id="domainModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Select Your Interview Domain</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">The AI will customize your technical questions based on this track.</p>
+            <div class="domain-grid">
+                <button class="domain-btn" onclick="startInterview('Frontend Engineering')">Frontend Engineering</button>
+                <button class="domain-btn" onclick="startInterview('Backend Engineering')">Backend Engineering</button>
+                <button class="domain-btn" onclick="startInterview('Data Science')">Data Science</button>
+                <button class="domain-btn" onclick="startInterview('DevOps')">DevOps</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="header">
+            <div class="header-badge" id="domainBadge">Enterprise Edition</div>
+            <h1>AI Interviewer Pro</h1>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 6px;">Powered by Groq & Azure</p>
+        </div>
+
+        <div class="chat-box" id="chatBox"></div>
+
+        <div class="controls">
+            <div class="input-row">
+                <button id="recordBtn" class="record-btn" onclick="toggleRecording()" title="Use Microphone" disabled>🎙️</button>
+                <input type="text" id="textInput" class="text-input" placeholder="Select a domain first..." onkeypress="handleKeyPress(event)" disabled>
+                <button id="sendBtn" class="send-btn" onclick="submitTextResponse()" disabled>Send</button>
+            </div>
+            
+            <div class="status-wrapper">
+                <div id="typingIndicator" class="typing-indicator"><span></span><span></span><span></span></div>
+                <div class="status-text" id="statusText">Waiting for domain selection...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chatBox'); 
+        const recordBtn = document.getElementById('recordBtn');
+        const textInput = document.getElementById('textInput'); 
+        const sendBtn = document.getElementById('sendBtn');
+        const statusText = document.getElementById('statusText');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const domainBadge = document.getElementById('domainBadge');
+
+        let isRecording = false;
+        let recognition;
+        let selectedDomain = ""; // Stores the candidate's choice globally
+
+        // --- NEW START LOGIC ---
+        function startInterview(domain) {
+            selectedDomain = domain;
+            document.getElementById('domainModal').style.display = 'none'; 
+            domainBadge.innerText = domain + " Interview"; // Update the UI badge
+            
+            // Unlock UI and trigger the first question
+            textInput.placeholder = "Type your response or click the mic to speak...";
+            fetchFirstQuestion(); 
+        }
+
+        async function fetchFirstQuestion() {
+            setUIProcessing(true, "Connecting to AI Brain...");
+            try {
+                // Send the domain even for the first question to set the tone
+                const response = await fetch('/api/get_question', {
+                    method: 'POST', // Changed from GET to POST so we can send data
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ domain: selectedDomain }) 
+                });
+                const data = await response.json();
+                appendMessage('AI', data.question);
+                
+                statusText.innerText = "🔊 AI is speaking...";
+                playAiVoice(data.audio_base64, () => {
+                    setUIProcessing(false, "Ready! Speak or type your response.");
+                });
+            } catch (error) { statusText.innerText = "Error connecting to server."; }
+        }
+
+        // --- MICROPHONE LOGIC ---
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true; 
+
+            recognition.onstart = function() {
+                isRecording = true;
+                recordBtn.classList.add('recording'); 
+                recordBtn.innerText = "🛑"; 
+                statusText.innerText = "Listening live... click stop to review your text.";
+                textInput.value = ""; 
+            };
+
+            recognition.onresult = function(event) {
+                let currentTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    currentTranscript += event.results[i][0].transcript;
+                }
+                textInput.value = currentTranscript; 
+            };
+
+            recognition.onerror = function(event) {
+                forceStopRecordingUI();
+            };
+
+            recognition.onend = function() {
+                if (isRecording) forceStopRecordingUI();
+            };
+        }
+
+        function toggleRecording() {
+            if (!recognition) return alert("Please use Chrome or Edge for voice features.");
+            if (isRecording) { forceStopRecordingUI(); } 
+            else { try { recognition.start(); } catch(e) {} }
+        }
+
+        function forceStopRecordingUI() {
+            isRecording = false;
+            recordBtn.classList.remove('recording');
+            recordBtn.innerText = "🎙️";
+            try { recognition.stop(); } catch(e) {}
+            setUIProcessing(false, "Review your text, edit if needed, and click Send.");
+        }
+
+        function playAiVoice(base64Audio, callback) {
+            if (base64Audio) {
+                const audio = new Audio("data:audio/mp3;base64," + base64Audio);
+                let playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => { audio.onended = callback; }).catch(error => { callback(); });
+                }
+            } else { callback(); }
+        }
+
+        function appendMessage(sender, text) {
+            const div = document.createElement('div');
+            div.classList.add('message', sender === 'AI' ? 'ai-message' : 'user-message');
+            div.innerText = text;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function setUIProcessing(isProcessing, message) {
+            recordBtn.disabled = isProcessing; 
+            textInput.disabled = isProcessing; 
+            sendBtn.disabled = isProcessing;
+            statusText.innerText = message;
+            
+            if (isProcessing) {
+                recordBtn.classList.remove('recording'); 
+                recordBtn.innerText = "🎙️";
+                if (message.includes("thinking")) {
+                    typingIndicator.style.display = "flex";
+                    statusText.innerText = "Processing...";
+                }
+            } else {
+                typingIndicator.style.display = "none";
+                recordBtn.classList.remove('recording'); 
+                recordBtn.innerText = "🎙️";
+                textInput.focus();
+            }
+        }
+
+        function handleKeyPress(event) { if (event.key === 'Enter') submitTextResponse(); }
+
+        async function submitTextResponse() {
+            if (isRecording) forceStopRecordingUI();
+
+            const text = textInput.value.trim(); if (!text) return;
+            
+            appendMessage('You', text);
+            setUIProcessing(true, "AI is thinking...");
+            textInput.value = ""; 
+            
+            try {
+                // WE NOW SEND BOTH THE TEXT AND THE CHOSEN DOMAIN
+                const response = await fetch('/api/process_answer', {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ text: text, domain: selectedDomain })
+                });
+                const data = await response.json();
+                
+                typingIndicator.style.display = "none";
+                appendMessage('AI', data.next_question);
+                
+                statusText.innerText = "🔊 AI is speaking...";
+                playAiVoice(data.audio_base64, () => {
+                    setUIProcessing(false, "Ready! Speak or type your next response.");
+                });
+            } catch (error) { setUIProcessing(false, "Failed to send text."); }
+        }
+    </script>
+</body>
+</html>
